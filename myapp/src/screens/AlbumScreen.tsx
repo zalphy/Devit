@@ -27,6 +27,7 @@ import { applyUndevelopedPreviewEffect, getUndevelopedPreviewUriByPhotoId } from
 import { useGithubCommits } from '../hooks/useGithubCommits';
 import { FilmInventory, FILM_META, FILM_TYPES } from '../types';
 import { styles } from '../styles/AlbumScreen.styles';
+import { styles as dashboard_styles} from '../styles/dashboard.styles';
 
 const DISPLAY_FILMS = FILM_TYPES.filter(type => ['mono', 'vivid', 'retro'].includes(type));
 
@@ -589,11 +590,11 @@ export const AlbumScreen: React.FC<AlbumScreenProps> = ({ onBack, onGoCamera, on
             <View style={styles.navSquare} />
           </View>
 
-          <View style={styles.dashboard}>
-            <Text style={styles.systemText}>DEVIT  //  ALBUM</Text>
+          <View style={dashboard_styles.dashboard}>
+            <Text style={dashboard_styles.systemText}>DEVIT  //  ALBUM</Text>
 
-            <View style={styles.instruments}>
-              <Text style={styles.label}>[ PICTURE TYPE ]</Text>
+            <View style={dashboard_styles.instruments}>
+              <Text style={dashboard_styles.label}>[ PICTURE TYPE ]</Text>
               <View style={styles.buttonRow}>
                 <TouchableOpacity
                   onPress={() => {
@@ -619,7 +620,7 @@ export const AlbumScreen: React.FC<AlbumScreenProps> = ({ onBack, onGoCamera, on
                 </TouchableOpacity>
               </View>
 
-              <Text style={styles.label}>[ MODE ]</Text>
+              <Text style={dashboard_styles.label}>[ MODE ]</Text>
               <View style={styles.buttonRow}>
                 <TouchableOpacity
                   onPress={toggleSelectionMode}
@@ -633,7 +634,7 @@ export const AlbumScreen: React.FC<AlbumScreenProps> = ({ onBack, onGoCamera, on
 
               {isSelectionMode && selectedPhotoIds.length > 0 && (
                 <>
-                  <Text style={styles.label}>[ ACTION ] {selectedPhotoIds.length}枚選択中</Text>
+                  <Text style={dashboard_styles.label}>[ ACTION ] {selectedPhotoIds.length}枚選択中</Text>
                   <View style={styles.buttonRow}>
                     <TouchableOpacity
                       onPress={() => void handleSaveSelectedPhotos()}
@@ -653,7 +654,7 @@ export const AlbumScreen: React.FC<AlbumScreenProps> = ({ onBack, onGoCamera, on
 
               {sortedPhotos.length > ITEMS_PER_PAGE && (
                 <>
-                  <Text style={styles.label}>[ PAGINATION ]</Text>
+                  <Text style={dashboard_styles.label}>[ PAGINATION ]</Text>
                   <View style={styles.paginationContainer}>
                     <TouchableOpacity
                       onPress={handlePreviousPage}

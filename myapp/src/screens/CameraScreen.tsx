@@ -12,6 +12,7 @@ import { consumeFilm, addPhoto, getFilmInventory } from '../utils/sqlite';
 import { useGithubCommits } from '../hooks/useGithubCommits';
 import { FilmInventory, FILM_META, FILM_TYPES, RewardFilmType } from '../types';
 import { styles } from '../styles/CameraScreen.styles';
+import { styles as dashboard_styles} from '../styles/dashboard.styles';
 import { ShutterOverlay } from '../components/ShutterOverlay';
 
 // ★修正: 3種類のみに限定
@@ -217,11 +218,12 @@ export const CameraScreen: React.FC<CameraScreenProps> = ({ filmType, filmId, on
             <View style={styles.navSquare} />
           </View>
 
-          <View style={styles.dashboard}>
-            <Text style={[styles.systemText, regularFont]}>DEVIT  //  SYSTEM_READY</Text>
+          {/* Dashboard */}
+          <View style={dashboard_styles.dashboard}>
+            <Text style={[dashboard_styles.systemText, regularFont]}>DEVIT  //  SYSTEM_READY</Text>
             
-            <View style={styles.instruments}>
-              <Text style={[styles.label, regularFont]}>[ FILM_TYPE ]</Text>
+            <View style={dashboard_styles.instruments}>
+              <Text style={[dashboard_styles.label, regularFont]}>[ FILM_TYPE ]</Text>
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -259,16 +261,16 @@ export const CameraScreen: React.FC<CameraScreenProps> = ({ filmType, filmId, on
               
               <View style={styles.row}>
                 <View>
-                  <Text style={[styles.label, regularFont]}>[ FLASH ]</Text>
+                  <Text style={[dashboard_styles.label, regularFont]}>[ FLASH ]</Text>
                   <TouchableOpacity onPress={toggleFlash} style={styles.dashboardBtn}>
-                    <Text style={[styles.btnText, boldFont]}>{flash.toUpperCase()}</Text>
+                    <Text style={[styles.flashButtonText, boldFont]}>{flash.toUpperCase()}</Text>
                   </TouchableOpacity>
                 </View>
               </View>
 
               <View style={styles.controlsRow}>
                 <View>
-                  <Text style={[styles.label, regularFont]}>[ ZOOM_LEVEL ]</Text>
+                  <Text style={[dashboard_styles.label, regularFont]}>[ ZOOM_LEVEL ]</Text>
                   <View style={styles.zoomControls}>
                     <TouchableOpacity onPress={() => handleZoom(false)} style={[styles.dashboardBtn, styles.zoomSymbolButton]}><Text style={styles.zoomSymbolText}>-</Text></TouchableOpacity>
                     <Text style={[styles.valueText, regularFont]}>{(zoom * 10).toFixed(1)}</Text>

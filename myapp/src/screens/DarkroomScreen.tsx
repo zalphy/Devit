@@ -14,6 +14,7 @@ import { getDarkroomUseNativeRipple } from '../utils/storage';
 import { FilmInventory, FILM_META, FILM_TYPES } from '../types';
 
 import { styles as albumStyles } from '../styles/AlbumScreen.styles';
+import { styles as dashboard_styles } from '../styles/dashboard.styles';
 import { styles as darkroomStyles } from '../styles/DarkroomScreen.styles';
 import { DarkroomSkiaView } from '../components/DarkroomSkiaView';
 
@@ -731,14 +732,14 @@ export const DarkroomScreen: React.FC<DarkroomScreenProps> = ({ onBack, onGoSett
             <View style={[albumStyles.navSquare, albumStyles.navSquareActive]} />
           </View>
 
-          <View style={albumStyles.dashboard}>
-            <Text style={albumStyles.systemText}>DEVIT  //  DARKROOM</Text>
+          <View style={dashboard_styles.dashboard}>
+            <Text style={dashboard_styles.systemText}>DEVIT  //  DARKROOM</Text>
 
-            <View style={albumStyles.instruments}>
+            <View style={dashboard_styles.instruments}>
               
               {(isSessionStarted && !isSessionCompleted && !isFinishingSession) && (
                 <>
-                  <Text style={albumStyles.label}>[ TIME LEFT ]</Text>
+                  <Text style={dashboard_styles.label}>[ TIME LEFT ]</Text>
                   <Text style={[
                     darkroomStyles.statusValue, 
                     { 
@@ -765,12 +766,12 @@ export const DarkroomScreen: React.FC<DarkroomScreenProps> = ({ onBack, onGoSett
                 </Text>
               )}
 
-              <Text style={albumStyles.label}>[ INFO: DEV / TOTAL ]</Text>
+              <Text style={dashboard_styles.label}>[ INFO: DEV / TOTAL ]</Text>
               <Text style={[darkroomStyles.infoValue, { fontSize: 22, letterSpacing: 4, color: '#fff' }]}>
                 {developingCount} / {totalPendingCount}
               </Text>
 
-              <Text style={[albumStyles.label, { marginTop: Platform.OS === 'android' ? 14 : 32 }]}>[ ACTION ]</Text>
+              <Text style={[dashboard_styles.label, { marginTop: Platform.OS === 'android' ? 14 : 32 }]}>[ ACTION ]</Text>
               <View style={albumStyles.buttonRow}>
                 {!isSessionStarted && !isSessionCompleted && activePhoto && (
                   <TouchableOpacity style={albumStyles.dashboardBtn} onPress={handleStartDeveloping}>

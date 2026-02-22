@@ -106,30 +106,8 @@ export const styles = StyleSheet.create({
   },
 
   /* Dashboard */
-  dashboard: {
-    flex: 1,
-    alignSelf: 'stretch',
-    paddingLeft: s(24),
-    paddingTop: s(80),
-    paddingRight: Platform.OS === 'android' ? s(8) : 0,
-    justifyContent: 'flex-start',
-  },
-  systemText: {
-    color: '#00ff00',
-    fontFamily: 'Courier',
-    fontSize: s(14),
-    marginBottom: s(20),
-    letterSpacing: 1,
-  },
-  instruments: {
-    gap: Platform.OS === 'android' ? c(12) : s(12),
-  },
-  label: {
-    color: '#666',
-    fontFamily: 'Courier',
-    fontSize: Platform.OS === 'android' ? c(12) : s(12),
-    marginBottom: Platform.OS === 'android' ? c(4) : s(4),
-  },
+  
+  // dashboard, systemText, instruments, labelをdashboard.styles.tsに移動
   buttonRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
