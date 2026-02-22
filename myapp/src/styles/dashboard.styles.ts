@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   instruments: {
-    gap: Platform.OS === 'android' ? c(12) : s(15),
+    gap: Platform.OS === 'android' ? c(12) : s(12),
   },
   label: {
     color: '#666',
