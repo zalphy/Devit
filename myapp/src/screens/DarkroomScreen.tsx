@@ -12,6 +12,7 @@ import { applyFilmEffectToPhoto, applyUndevelopedPreviewEffect, getUndevelopedPr
 import { useGithubCommits } from '../hooks/useGithubCommits';
 import { getDarkroomUseNativeRipple } from '../utils/storage';
 import { FilmInventory, FILM_META, FILM_TYPES } from '../types';
+import TopBar from '../components/TopBar/TopBar';
 
 import { styles as albumStyles } from '../styles/AlbumScreen.styles';
 import { styles as dashboard_styles } from '../styles/dashboard.styles';
@@ -702,25 +703,7 @@ export const DarkroomScreen: React.FC<DarkroomScreenProps> = ({ onBack, onGoSett
 
   return (
     <SafeAreaView style={albumStyles.container} {...swipePanResponder.panHandlers}>
-      <View style={albumStyles.topBar}>
-        {DISPLAY_FILMS.map((type) => {
-          const meta = FILM_META[type];
-          return (
-            <View key={type} style={albumStyles.filmBadge}>
-              <Image source={meta.image} style={albumStyles.filmBadgeImage} />
-              <Text style={[albumStyles.filmBadgeCount, boldFont]}>{filmInventory[type]}</Text>
-            </View>
-          );
-        })}
-        <TouchableOpacity style={albumStyles.topBarButton} onPress={handleCheckCommits}>
-          <Text style={[albumStyles.topBarButtonText, boldFont]}>↻</Text>
-        </TouchableOpacity>
-        {onGoSettings && (
-          <TouchableOpacity style={albumStyles.topBarButton} onPress={onGoSettings}>
-            <Text style={[albumStyles.topBarButtonText, boldFont]}>⚙</Text>
-          </TouchableOpacity>
-        )}
-      </View>
+      <TopBar filmInventory={filmInventory} handleCheckCommits={handleCheckCommits} handleGoSettings={onGoSettings || (() => {})} />
 
       <View style={albumStyles.mainLayout}>
         <View style={albumStyles.leftPanel}>

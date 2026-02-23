@@ -26,6 +26,7 @@ import { deletePhoto, getPhotosByStatus, PhotoWithFilmName, getFilmInventory } f
 import { applyUndevelopedPreviewEffect, getUndevelopedPreviewUriByPhotoId } from '../utils/photoEffects';
 import { useGithubCommits } from '../hooks/useGithubCommits';
 import { FilmInventory, FILM_META, FILM_TYPES } from '../types';
+import TopBar from '../components/TopBar/TopBar';
 import { styles } from '../styles/AlbumScreen.styles';
 import { styles as dashboard_styles} from '../styles/dashboard.styles';
 
@@ -562,23 +563,7 @@ export const AlbumScreen: React.FC<AlbumScreenProps> = ({ onBack, onGoCamera, on
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={[styles.topBar, { left: screenWidth * 0.42 }]}> 
-        {DISPLAY_FILMS.map((type) => {
-          const meta = FILM_META[type];
-          return (
-            <View key={type} style={styles.filmBadge}>
-              <Image source={meta.image} style={styles.filmBadgeImage} />
-              <Text style={styles.filmBadgeCount}>{filmInventory[type]}</Text>
-            </View>
-          );
-        })}
-        <TouchableOpacity style={styles.topBarButton} onPress={handleCheckCommits}>
-          <Text style={styles.topBarButtonText}>↻</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.topBarButton} onPress={onGoSettings}>
-          <Text style={styles.topBarButtonText}>⚙</Text>
-        </TouchableOpacity>
-      </View>
+      <TopBar filmInventory={filmInventory} handleCheckCommits={handleCheckCommits} handleGoSettings={onGoSettings || (() => {})} />
 
       <View style={styles.mainLayout}>
         <View style={styles.leftPanel} {...swipePanResponder.panHandlers}>

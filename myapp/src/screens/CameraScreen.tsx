@@ -14,7 +14,7 @@ import { FilmInventory, FILM_META, FILM_TYPES, RewardFilmType } from '../types';
 import { styles } from '../styles/CameraScreen.styles';
 import { styles as dashboard_styles} from '../styles/dashboard.styles';
 import { ShutterOverlay } from '../components/ShutterOverlay';
-
+import TopBar from '../components/TopBar/TopBar';
 // ★修正: 3種類のみに限定
 const FILM_ID_MAP: Record<string, number> = {
   mono: 11,   // (実質 Cinema)
@@ -188,24 +188,7 @@ export const CameraScreen: React.FC<CameraScreenProps> = ({ filmType, filmId, on
   return (
     <SafeAreaView style={styles.container} {...swipePanResponder.panHandlers}>
       {/* Top bar: film inventory + refresh + settings */}
-      <View style={[styles.topBar, { left: topBarLeft }]}>
-        {/* ★修正: DISPLAY_FILMSを使って3種類のみ表示 */}
-        {DISPLAY_FILMS.map((type) => {
-          const meta = FILM_META[type];
-          return (
-            <View key={type} style={styles.filmBadge}>
-              <Image source={meta.image} style={styles.filmBadgeImage} />
-              <Text style={[styles.filmBadgeCount, boldFont]}>{filmInventory[type]}</Text>
-            </View>
-          );
-        })}
-        <TouchableOpacity style={styles.topBarButton} onPress={handleCheckCommits}>
-          <Text style={[styles.topBarButtonText, boldFont]}>↻</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.topBarButton} onPress={onGoSettings}>
-          <Text style={[styles.topBarButtonText, boldFont]}>⚙</Text>
-        </TouchableOpacity>
-      </View>
+      <TopBar filmInventory={filmInventory} handleCheckCommits={handleCheckCommits} handleGoSettings={onGoSettings || (() => {})} />
 
       <View style={styles.mainLayout}>
         {/* Left panel: grip + dashboard (matching AlbumScreen layout) */}
