@@ -12,19 +12,19 @@ export const styles = StyleSheet.create({
   },
   // ★ 追加: 右パネル内で全画面を覆うコンテナ
   fullscreenContent: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
   },
   fullscreenImage: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     resizeMode: 'cover',
   },
   fullscreenSkiaWrap: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     zIndex: 2,
     overflow: 'hidden',
   },
   emptyBackground: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#111',
@@ -38,7 +38,7 @@ export const styles = StyleSheet.create({
     letterSpacing: s(4),
   },
   resultModalBackdrop: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: 'rgba(0, 0, 0, 0.85)',
     justifyContent: 'center',
     alignItems: 'center',
@@ -128,11 +128,11 @@ export const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   resultImage: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     resizeMode: 'cover',
   },
   resultImageOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     resizeMode: 'cover',
   },
   resultFooter: {

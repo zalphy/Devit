@@ -5,8 +5,9 @@ import { Buffer } from 'buffer';
 import { fromByteArray, toByteArray } from 'base64-js';
 import { RewardFilmType } from '../types';
 
-if (typeof globalThis.Buffer === 'undefined') {
-  (globalThis as { Buffer?: typeof Buffer }).Buffer = Buffer;
+const globalWithBuffer = globalThis as { Buffer?: typeof Buffer };
+if (typeof globalWithBuffer.Buffer === 'undefined') {
+  globalWithBuffer.Buffer = Buffer;
 }
 
 const clamp = (value: number) => Math.max(0, Math.min(255, Math.round(value)));

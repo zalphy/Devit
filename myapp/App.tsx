@@ -232,7 +232,7 @@ export default function App() {
 
   return (
     <View style={styles.container} {...iosEdgeBackPanResponder.panHandlers}>
-      <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
+      <StatusBar barStyle="light-content" />
       <Animated.View
         style={[
           styles.content,

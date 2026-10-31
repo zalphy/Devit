@@ -231,7 +231,7 @@ export const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   photoBlurOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     zIndex: 2,
     backgroundColor: 'rgba(255,255,255,0.06)',
   },
@@ -338,7 +338,7 @@ export const styles = StyleSheet.create({
     height: '80%',
   },
   detailBlurOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     top: '11%',
     bottom: '11%',
     backgroundColor: 'rgba(255,255,255,0.06)',
@@ -461,7 +461,7 @@ detailFooterText: {
     backgroundColor: '#1f1f1f',
   },
   processingOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     zIndex: 12,
     backgroundColor: 'rgba(0,0,0,0.45)',
     justifyContent: 'center',
@@ -476,7 +476,7 @@ detailFooterText: {
 
   /* ── Detail photo modal (fallback overlay) ── */
   detailModalBackdrop: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     zIndex: 10,
     backgroundColor: 'rgba(0, 0, 0, 0.95)',
     justifyContent: 'center',

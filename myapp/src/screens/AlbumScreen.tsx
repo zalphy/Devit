@@ -456,17 +456,11 @@ export const AlbumScreen: React.FC<AlbumScreenProps> = ({ onBack, onGoCamera, on
   const savePhotoToLibrary = useCallback(async (uri: string): Promise<boolean> => {
     try {
       const savableUri = await resolveSavableUri(uri);
-      await MediaLibrary.saveToLibraryAsync(savableUri);
+      await MediaLibrary.Asset.create(savableUri);
       return true;
-    } catch (firstError) {
-      try {
-        const savableUri = await resolveSavableUri(uri);
-        await MediaLibrary.createAssetAsync(savableUri);
-        return true;
-      } catch (secondError) {
-        console.log('failed to save photo to device', { firstError, secondError, uri });
-        return false;
-      }
+    } catch (error) {
+      console.log('failed to save photo to device', { error, uri });
+      return false;
     }
   }, [resolveSavableUri]);
 

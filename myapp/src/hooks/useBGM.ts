@@ -1,21 +1,35 @@
 import { useEffect, useRef, useState } from 'react';
-import { Audio } from 'expo-av';
+import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from 'expo-audio';
 import { getBGMVolume, setBGMVolume } from '../utils/storage';
 
 const BGM_FILE: number | null = null;
 
 export const useBGM = () => {
-  const soundRef = useRef<Audio.Sound | null>(null);
+  const playerRef = useRef<AudioPlayer | null>(null);
   const [volume, setVolume] = useState(0.5);
   const [isPlaying, setIsPlaying] = useState(false);
+
+  const releasePlayer = () => {
+    const player = playerRef.current;
+    playerRef.current = null;
+    if (!player) {
+      return;
+    }
+    try {
+      player.pause();
+      player.remove();
+    } catch {
+      // no-op
+    }
+  };
 
   // Initialize audio and load volume setting
   useEffect(() => {
     const initAudio = async () => {
       try {
-        await Audio.setAudioModeAsync({
-          playsInSilentModeIOS: true,
-          staysActiveInBackground: true,
+        await setAudioModeAsync({
+          playsInSilentMode: true,
+          shouldPlayInBackground: true,
         });
         const savedVolume = await getBGMVolume();
         setVolume(savedVolume);
@@ -27,50 +41,21 @@ export const useBGM = () => {
 
     return () => {
       // Cleanup
-      void (async () => {
-        const sound = soundRef.current;
-        if (!sound) {
-          return;
-        }
-
-        try {
-          const status = await sound.getStatusAsync();
-          if (status.isLoaded) {
-            await sound.unloadAsync();
-          }
-        } catch {
-          // no-op
-        } finally {
-          soundRef.current = null;
-        }
-      })();
+      releasePlayer();
     };
   }, []);
 
-  const loadBGM = async () => {
+  const loadBGM = () => {
     try {
+      releasePlayer();
       if (!BGM_FILE) {
-        soundRef.current = null;
         return;
       }
 
-      if (soundRef.current) {
-        try {
-          const status = await soundRef.current.getStatusAsync();
-          if (status.isLoaded) {
-            await soundRef.current.unloadAsync();
-          }
-        } catch {
-          // no-op
-        }
-      }
-
-      const { sound } = await Audio.Sound.createAsync(BGM_FILE, {
-        volume,
-        isLooping: true,
-        shouldPlay: false,
-      });
-      soundRef.current = sound;
+      const player = createAudioPlayer(BGM_FILE);
+      player.loop = true;
+      player.volume = volume;
+      playerRef.current = player;
     } catch (error) {
       console.error('Error loading BGM:', error);
     }
@@ -83,11 +68,11 @@ export const useBGM = () => {
         return;
       }
 
-      if (!soundRef.current) {
-        await loadBGM();
+      if (!playerRef.current) {
+        loadBGM();
       }
-      if (soundRef.current && !isPlaying) {
-        await soundRef.current.playAsync();
+      if (playerRef.current && !isPlaying) {
+        playerRef.current.play();
         setIsPlaying(true);
       }
     } catch (error) {
@@ -97,18 +82,14 @@ export const useBGM = () => {
 
   const stopBGM = async () => {
     try {
-      if (!soundRef.current) {
+      const player = playerRef.current;
+      if (!player) {
         return;
       }
 
-      const status = await soundRef.current.getStatusAsync();
-      if (!status.isLoaded) {
-        setIsPlaying(false);
-        return;
-      }
-
-      if (status.isPlaying) {
-        await soundRef.current.stopAsync();
+      if (player.playing) {
+        player.pause();
+        await player.seekTo(0);
       }
       setIsPlaying(false);
     } catch (error) {
@@ -120,14 +101,14 @@ export const useBGM = () => {
     const clampedVolume = Math.max(0, Math.min(1, newVolume));
     setVolume(clampedVolume);
     await setBGMVolume(clampedVolume);
-    
+
     // Load BGM if not already loaded
-    if (!soundRef.current) {
-      await loadBGM();
+    if (!playerRef.current) {
+      loadBGM();
     }
-    
-    if (soundRef.current) {
-      await soundRef.current.setVolumeAsync(clampedVolume);
+
+    if (playerRef.current) {
+      playerRef.current.volume = clampedVolume;
     }
   };
 
