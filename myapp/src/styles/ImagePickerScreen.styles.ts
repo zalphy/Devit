@@ -150,7 +150,7 @@ export const styles = StyleSheet.create({
     height: s(200),
   },
   imageBlurOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     zIndex: 2,
   },
 });

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, BackHandler, Image, Platform, SafeAreaView, Text, TouchableOpacity, View, PanResponder, AppState, Alert, useWindowDimensions, Animated, Easing, Pressable, ScrollView, FlatList } from 'react-native';
-import { Audio } from 'expo-av';
+import { createAudioPlayer, type AudioPlayer } from 'expo-audio';
 import { useFonts } from 'expo-font';
 import {
   CourierPrime_400Regular,
@@ -50,6 +50,11 @@ interface ResultPhoto {
   aspectRatio: number;
 }
 
+const releaseAudioPlayer = (player: AudioPlayer) => {
+  try { player.pause(); } catch {}
+  try { player.remove(); } catch {}
+};
+
 export const DarkroomScreen: React.FC<DarkroomScreenProps> = ({ onBack, onGoSettings, onGoAlbum }) => {
   const [fontsLoaded] = useFonts({
     CourierPrime_400Regular,
@@ -75,12 +80,12 @@ export const DarkroomScreen: React.FC<DarkroomScreenProps> = ({ onBack, onGoSett
   // ★追加: 複数枚の事前処理結果を保持するためのRef（再レンダリング不要なのでRefが適しています）
   const preProcessedUrisRef = useRef<Map<number, string>>(new Map());
 
-  const waterSoundRef = useRef<Audio.Sound | null>(null);
-  const whiteNoiseSoundRef = useRef<Audio.Sound | null>(null);
-  const mixdownSoundRef = useRef<Audio.Sound | null>(null);
+  const waterSoundRef = useRef<AudioPlayer | null>(null);
+  const whiteNoiseSoundRef = useRef<AudioPlayer | null>(null);
+  const mixdownSoundRef = useRef<AudioPlayer | null>(null);
   const mixdownTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const selectedDarkroomBgmRef = useRef<number | null>(null);
-  const waterTouchSoundRef = useRef<Audio.Sound | null>(null);
+  const waterTouchSoundRef = useRef<AudioPlayer | null>(null);
   const waterTouchStopTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastWaterTouchAtRef = useRef(0);
   const cancelProcessingRef = useRef(false);
@@ -203,16 +208,14 @@ export const DarkroomScreen: React.FC<DarkroomScreenProps> = ({ onBack, onGoSett
     const currentSound = waterSoundRef.current;
     if (!currentSound) return;
     waterSoundRef.current = null;
-    try { await currentSound.stopAsync(); } catch {}
-    try { await currentSound.unloadAsync(); } catch {}
+    releaseAudioPlayer(currentSound);
   }, []);
 
   const stopAndUnloadWhiteNoiseSound = useCallback(async () => {
     const currentSound = whiteNoiseSoundRef.current;
     if (!currentSound) return;
     whiteNoiseSoundRef.current = null;
-    try { await currentSound.stopAsync(); } catch {}
-    try { await currentSound.unloadAsync(); } catch {}
+    releaseAudioPlayer(currentSound);
   }, []);
 
   const stopAndUnloadMixdownSound = useCallback(async () => {
@@ -223,8 +226,7 @@ export const DarkroomScreen: React.FC<DarkroomScreenProps> = ({ onBack, onGoSett
     const currentSound = mixdownSoundRef.current;
     if (!currentSound) return;
     mixdownSoundRef.current = null;
-    try { await currentSound.stopAsync(); } catch {}
-    try { await currentSound.unloadAsync(); } catch {}
+    releaseAudioPlayer(currentSound);
   }, []);
 
   const stopAndUnloadWaterTouchSound = useCallback(async () => {
@@ -235,8 +237,7 @@ export const DarkroomScreen: React.FC<DarkroomScreenProps> = ({ onBack, onGoSett
     const currentSound = waterTouchSoundRef.current;
     if (!currentSound) return;
     waterTouchSoundRef.current = null;
-    try { await currentSound.stopAsync(); } catch {}
-    try { await currentSound.unloadAsync(); } catch {}
+    releaseAudioPlayer(currentSound);
   }, []);
 
   const playWaterTouchSound = useCallback(async () => {
@@ -493,17 +494,13 @@ export const DarkroomScreen: React.FC<DarkroomScreenProps> = ({ onBack, onGoSett
       if (whiteNoiseSoundRef.current) return;
 
       try {
-        const { sound } = await Audio.Sound.createAsync(
-          DARKROOM_WHITE_NOISE_BGM,
-          { shouldPlay: true, isLooping: true, volume: DARKROOM_WHITE_NOISE_VOLUME },
-        );
+        if (!isMounted) return;
 
-        if (!isMounted) {
-          try { await sound.unloadAsync(); } catch {}
-          return;
-        }
-
-        whiteNoiseSoundRef.current = sound;
+        const player = createAudioPlayer(DARKROOM_WHITE_NOISE_BGM);
+        player.loop = true;
+        player.volume = DARKROOM_WHITE_NOISE_VOLUME;
+        player.play();
+        whiteNoiseSoundRef.current = player;
       } catch (error) {
         console.warn('ホワイトノイズの再生に失敗しました', error);
       }
@@ -532,31 +529,28 @@ export const DarkroomScreen: React.FC<DarkroomScreenProps> = ({ onBack, onGoSett
       try {
         const currentSound = mixdownSoundRef.current;
         if (currentSound) {
-          const status = await currentSound.getStatusAsync();
-          if (status.isLoaded && status.isPlaying) {
+          if (currentSound.playing) {
             return;
           }
-          try { await currentSound.unloadAsync(); } catch {}
+          releaseAudioPlayer(currentSound);
           if (mixdownSoundRef.current === currentSound) {
             mixdownSoundRef.current = null;
           }
         }
 
-        const { sound } = await Audio.Sound.createAsync(
-          DARKROOM_MIXDOWN_BGM,
-          { shouldPlay: true, isLooping: false, volume: 0.12 },
-        );
-
-        mixdownSoundRef.current = sound;
-        sound.setOnPlaybackStatusUpdate((status) => {
-          if (!status.isLoaded || !status.didJustFinish) return;
-          void (async () => {
-            if (mixdownSoundRef.current === sound) {
-              mixdownSoundRef.current = null;
-            }
-            try { await sound.unloadAsync(); } catch {}
-          })();
+        const player = createAudioPlayer(DARKROOM_MIXDOWN_BGM);
+        player.loop = false;
+        player.volume = 0.12;
+        mixdownSoundRef.current = player;
+        const subscription = player.addListener('playbackStatusUpdate', (status) => {
+          if (!status.didJustFinish) return;
+          subscription.remove();
+          if (mixdownSoundRef.current === player) {
+            mixdownSoundRef.current = null;
+          }
+          releaseAudioPlayer(player);
         });
+        player.play();
       } catch (error) {
         console.warn('Mixdownの再生に失敗しました', error);
       }

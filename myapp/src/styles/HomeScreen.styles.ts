@@ -243,12 +243,12 @@ export const styles = StyleSheet.create({
     width: s(24),
   },
   menuLayer: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
   menuBackdrop: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: 'rgba(0,0,0,0.2)',
   },
   menuPanel: {
