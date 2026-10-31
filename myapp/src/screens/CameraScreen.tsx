@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Text, View, TouchableOpacity, SafeAreaView, Alert, PanResponder, Image, ScrollView, useWindowDimensions, Platform } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import * as Linking from 'expo-linking';
 import { useFonts } from 'expo-font';
 import {
   CourierPrime_400Regular,
