@@ -99,39 +99,21 @@ export const styles = StyleSheet.create({
   },
 
   /* Dashboard (matching AlbumScreen padding) */
-  dashboard: {
-    flex: 1,
-    alignSelf: 'stretch',
-    paddingLeft: s(24),
-    paddingTop: s(80),
-    paddingRight: Platform.OS === 'android' ? s(8) : 0,
-    justifyContent: 'flex-start',
-  },
-  systemText: {
-    color: '#00ff00',
-    fontFamily: 'Courier',
-    fontSize: s(14),
-    marginBottom: s(20),
-    letterSpacing: 1,
-  },
-  instruments: {
-    gap: s(15),
-  },
+  
+  // dashboard, systemText, instrumentsをdashboard.styles.tsに移動
+
   row: {
     flexDirection: 'row',
-    gap: s(30),
+    gap: s(10),
   },
   controlsRow: {
     flexDirection: 'row',
     gap: s(30),
     marginTop: s(10),
   },
-  label: {
-    color: '#666',
-    fontFamily: 'Courier',
-    fontSize: s(12),
-    marginBottom: s(5),
-  },
+
+  // labelをdashboard.styles.tsに移動
+
   valueHighlight: {
     color: '#fff',
     fontFamily: 'Courier',
@@ -156,7 +138,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  btnText: {
+  flashButtonText: {
     color: '#ccc',
     fontFamily: 'Courier',
     fontWeight: 'bold',

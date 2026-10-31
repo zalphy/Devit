@@ -12,8 +12,10 @@ import { applyFilmEffectToPhoto, applyUndevelopedPreviewEffect, getUndevelopedPr
 import { useGithubCommits } from '../hooks/useGithubCommits';
 import { getDarkroomUseNativeRipple } from '../utils/storage';
 import { FilmInventory, FILM_META, FILM_TYPES } from '../types';
+import TopBar from '../components/TopBar/TopBar';
 
 import { styles as albumStyles } from '../styles/AlbumScreen.styles';
+import { styles as dashboard_styles } from '../styles/dashboard.styles';
 import { styles as darkroomStyles } from '../styles/DarkroomScreen.styles';
 import { DarkroomSkiaView } from '../components/DarkroomSkiaView';
 
@@ -701,25 +703,7 @@ export const DarkroomScreen: React.FC<DarkroomScreenProps> = ({ onBack, onGoSett
 
   return (
     <SafeAreaView style={albumStyles.container} {...swipePanResponder.panHandlers}>
-      <View style={albumStyles.topBar}>
-        {DISPLAY_FILMS.map((type) => {
-          const meta = FILM_META[type];
-          return (
-            <View key={type} style={albumStyles.filmBadge}>
-              <Image source={meta.image} style={albumStyles.filmBadgeImage} />
-              <Text style={[albumStyles.filmBadgeCount, boldFont]}>{filmInventory[type]}</Text>
-            </View>
-          );
-        })}
-        <TouchableOpacity style={albumStyles.topBarButton} onPress={handleCheckCommits}>
-          <Text style={[albumStyles.topBarButtonText, boldFont]}>↻</Text>
-        </TouchableOpacity>
-        {onGoSettings && (
-          <TouchableOpacity style={albumStyles.topBarButton} onPress={onGoSettings}>
-            <Text style={[albumStyles.topBarButtonText, boldFont]}>⚙</Text>
-          </TouchableOpacity>
-        )}
-      </View>
+      <TopBar filmInventory={filmInventory} handleCheckCommits={handleCheckCommits} handleGoSettings={onGoSettings || (() => {})} />
 
       <View style={albumStyles.mainLayout}>
         <View style={albumStyles.leftPanel}>
@@ -731,14 +715,14 @@ export const DarkroomScreen: React.FC<DarkroomScreenProps> = ({ onBack, onGoSett
             <View style={[albumStyles.navSquare, albumStyles.navSquareActive]} />
           </View>
 
-          <View style={albumStyles.dashboard}>
-            <Text style={albumStyles.systemText}>DEVIT  //  DARKROOM</Text>
+          <View style={dashboard_styles.dashboard}>
+            <Text style={dashboard_styles.systemText}>DEVIT  //  DARKROOM</Text>
 
-            <View style={albumStyles.instruments}>
+            <View style={dashboard_styles.instruments}>
               
               {(isSessionStarted && !isSessionCompleted && !isFinishingSession) && (
                 <>
-                  <Text style={albumStyles.label}>[ TIME LEFT ]</Text>
+                  <Text style={dashboard_styles.label}>[ TIME LEFT ]</Text>
                   <Text style={[
                     darkroomStyles.statusValue, 
                     { 
@@ -765,12 +749,12 @@ export const DarkroomScreen: React.FC<DarkroomScreenProps> = ({ onBack, onGoSett
                 </Text>
               )}
 
-              <Text style={albumStyles.label}>[ INFO: DEV / TOTAL ]</Text>
+              <Text style={dashboard_styles.label}>[ INFO: DEV / TOTAL ]</Text>
               <Text style={[darkroomStyles.infoValue, { fontSize: 22, letterSpacing: 4, color: '#fff' }]}>
                 {developingCount} / {totalPendingCount}
               </Text>
 
-              <Text style={[albumStyles.label, { marginTop: Platform.OS === 'android' ? 14 : 32 }]}>[ ACTION ]</Text>
+              <Text style={[dashboard_styles.label, { marginTop: Platform.OS === 'android' ? 14 : 32 }]}>[ ACTION ]</Text>
               <View style={albumStyles.buttonRow}>
                 {!isSessionStarted && !isSessionCompleted && activePhoto && (
                   <TouchableOpacity style={albumStyles.dashboardBtn} onPress={handleStartDeveloping}>
